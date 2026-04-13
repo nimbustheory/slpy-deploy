@@ -245,6 +245,18 @@ function PageTitle({ title, subtitle }) {
   );
 }
 
+function PageHero({ title, subtitle, image }) {
+  return (
+    <div style={{ background: `linear-gradient(165deg, ${T.bg} 0%, hsl(20,25%,15%) 100%)`, color: "#fff", padding: "28px 22px 20px", position: "relative", overflow: "hidden" }}>
+      {image && <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${image})`, backgroundSize: "cover", backgroundPosition: "center", opacity: 0.18 }} />}
+      <div style={{ position: "relative" }}>
+        <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 28, fontWeight: 600, margin: 0 }}>{title}</h2>
+        {subtitle && <p style={{ fontSize: 13, color: "#b8a090", margin: "4px 0 0" }}>{subtitle}</p>}
+      </div>
+    </div>
+  );
+}
+
 function SectionHeader({ title, linkText, linkPage }) {
   const { setPage } = useContext(AppContext);
   return (
@@ -347,7 +359,7 @@ function HomePage() {
   const upcoming = CLASSES_TODAY.filter(c => c.time >= currentTime).slice(0, 4);
 
   return (
-    <div className="pb-6">
+    <div style={{ paddingBottom: 24 }}>
       {/* Hero */}
       <section style={{ background: `linear-gradient(165deg, ${T.bg} 0%, hsl(20,25%,15%) 100%)`, color: "#fff", padding: "32px 22px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "url(/images/hero-studio.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.18 }} />
@@ -481,12 +493,14 @@ function ClassesPage() {
   const allPractices = [TODAYS_FOCUS, ...PAST_PRACTICES, UPCOMING_PRACTICE].sort((a, b) => b.date.localeCompare(a.date));
 
   return (
-    <div style={{ padding: "0 16px" }}>
-      <PageTitle title="Classes" subtitle="Past, present, and upcoming practice" />
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {allPractices.map(p => (
-          <PracticeCardFull key={p.id} practice={p} expanded={expandedPractice === p.id} onToggle={() => setExpandedPractice(expandedPractice === p.id ? null : p.id)} />
-        ))}
+    <div>
+      <PageHero title="Classes" subtitle="Past, present, and upcoming practice" image="/images/class-scene.jpg" />
+      <div style={{ padding: "12px 16px 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {allPractices.map(p => (
+            <PracticeCardFull key={p.id} practice={p} expanded={expandedPractice === p.id} onToggle={() => setExpandedPractice(expandedPractice === p.id ? null : p.id)} />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -500,8 +514,9 @@ function SchedulePage() {
   const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   return (
-    <div style={{ padding: "0 16px" }}>
-      <PageTitle title="Schedule" subtitle="Reserve your spot — classes fill up fast" />
+    <div>
+      <PageHero title="Schedule" subtitle="Reserve your spot -- classes fill up fast" image="/images/studio-interior.jpg" />
+      <div style={{ padding: "12px 16px 0" }}>
       <div style={{ display: "flex", gap: 4, marginBottom: 16, overflowX: "auto", paddingBottom: 4 }}>
         {days.map((d, i) => (
           <button key={d} onClick={() => setSelectedDay(i)} style={{ padding: "8px 14px", borderRadius: 8, border: "none", background: selectedDay === i ? T.accent : T.bgCard, color: selectedDay === i ? "#fff" : T.textMuted, fontSize: 13, fontWeight: 600, cursor: "pointer", flexShrink: 0 }}>
@@ -527,6 +542,7 @@ function SchedulePage() {
           </div>
         ))}
       </div>
+      </div>
     </div>
   );
 }
@@ -537,8 +553,9 @@ function PracticePage() {
   const badges = ["First Class", "10 Classes", "50 Classes", "7-Day Streak"];
 
   return (
-    <div style={{ padding: "0 16px" }}>
-      <PageTitle title="My Practice" subtitle="Track your growth on the mat" />
+    <div>
+      <PageHero title="My Practice" subtitle="Track your growth on the mat" image="/images/yoga-flow.jpg" />
+      <div style={{ padding: "12px 16px 0" }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
         {[
           { label: "Total Classes", value: stats.totalClasses, icon: Flame, color: T.accent },
@@ -576,7 +593,8 @@ function PracticePage() {
         <div style={{ height: 8, borderRadius: 4, background: T.bgDim, overflow: "hidden" }}>
           <div style={{ height: "100%", width: `${(stats.totalClasses / 100) * 100}%`, borderRadius: 4, background: `linear-gradient(90deg, ${T.accent}, ${T.success})`, transition: "width 0.5s" }} />
         </div>
-        <p style={{ fontSize: 12, color: T.textMuted, margin: "8px 0 0" }}>{100 - stats.totalClasses} more classes to go — you're on fire!</p>
+        <p style={{ fontSize: 12, color: T.textMuted, margin: "8px 0 0" }}>{100 - stats.totalClasses} more classes to go -- you're on fire!</p>
+      </div>
       </div>
     </div>
   );
@@ -587,8 +605,9 @@ function CommunityPage() {
   const { feedCelebrations, celebrateFeed } = useContext(AppContext);
 
   return (
-    <div style={{ padding: "0 16px" }}>
-      <PageTitle title="cOMmunity" subtitle="Celebrate milestones and connect with your people" />
+    <div>
+      <PageHero title="cOMmunity" subtitle="Celebrate milestones and connect with your people" image="/images/team-photo.jpg" />
+      <div style={{ padding: "12px 16px 0" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {COMMUNITY_FEED.map(item => {
           const myC = feedCelebrations[item.id] || 0;
@@ -614,6 +633,7 @@ function CommunityPage() {
           );
         })}
       </div>
+      </div>
     </div>
   );
 }
@@ -623,8 +643,9 @@ function TeachersPage() {
   const [expanded, setExpanded] = useState(null);
 
   return (
-    <div style={{ padding: "0 16px" }}>
-      <PageTitle title="Our Team" subtitle="Yoga with teachers that are unique, inspiring, and fun" />
+    <div>
+      <PageHero title="Our Team" subtitle="Yoga with teachers that are unique, inspiring, and fun" image="/images/class-action.jpg" />
+      <div style={{ padding: "12px 16px 0" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {TEACHERS.map(t => (
           <div key={t.id} style={{ background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 14, overflow: "hidden" }}>
@@ -656,6 +677,7 @@ function TeachersPage() {
           </div>
         ))}
       </div>
+      </div>
     </div>
   );
 }
@@ -663,8 +685,9 @@ function TeachersPage() {
 // ——— EVENTS PAGE ———
 function EventsPage() {
   return (
-    <div style={{ padding: "0 16px" }}>
-      <PageTitle title="Events" subtitle="Workshops, sound baths, trainings, and more" />
+    <div>
+      <PageHero title="Events" subtitle="Workshops, sound baths, trainings, and more" image="/images/hero-studio.jpg" />
+      <div style={{ padding: "12px 16px 0" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {EVENTS.map(ev => {
           const spotsLeft = ev.maxParticipants - ev.registered;
@@ -693,6 +716,7 @@ function EventsPage() {
           );
         })}
       </div>
+      </div>
     </div>
   );
 }
@@ -700,8 +724,9 @@ function EventsPage() {
 // ——— MEMBERSHIP PAGE ———
 function MembershipPage() {
   return (
-    <div style={{ padding: "0 16px" }}>
-      <PageTitle title="Membership" subtitle="Simple. Understandable. Accessible." />
+    <div>
+      <PageHero title="Membership" subtitle="Simple. Understandable. Accessible." image="/images/yoga-flow.jpg" />
+      <div style={{ padding: "12px 16px 0" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {MEMBERSHIP_TIERS.map(tier => (
           <div key={tier.id} style={{ background: T.bgCard, border: `1px solid ${tier.popular ? T.accent : T.border}`, borderRadius: 14, padding: 18, position: "relative", overflow: "hidden" }}>
@@ -732,6 +757,7 @@ function MembershipPage() {
           </div>
         ))}
       </div>
+      </div>
     </div>
   );
 }
@@ -744,8 +770,9 @@ function GuestPassesPage() {
   ];
 
   return (
-    <div style={{ padding: "0 16px" }}>
-      <PageTitle title="Buddy Passes" subtitle="Share the SLPY love with someone special" />
+    <div>
+      <PageHero title="Buddy Passes" subtitle="Share the SLPY love with someone special" image="/images/team-photo.jpg" />
+      <div style={{ padding: "12px 16px 0" }}>
       <div style={{ background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 14, padding: 18, marginBottom: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
           <Gift size={24} color={T.accent} />
@@ -771,6 +798,7 @@ function GuestPassesPage() {
           <Info size={16} color={T.textMuted} />
           <p style={{ fontSize: 13, color: T.textMuted, margin: 0 }}>Buddy passes give your friend one free class to experience SLPY. They'll love you for it.</p>
         </div>
+      </div>
       </div>
     </div>
   );
@@ -945,8 +973,8 @@ function AdminCommunications() {
 
 function SettingsModal({ onClose }) {
   return (
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.6)", backdropFilter: "blur(6px)", zIndex: 50, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-      <div onClick={e => e.stopPropagation()} style={{ width: "100%", maxWidth: 390, background: T.bgCard, borderRadius: "20px 20px 0 0", padding: "20px 20px 32px", maxHeight: "70vh", overflow: "auto" }}>
+    <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,.6)", backdropFilter: "blur(6px)", zIndex: 50, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div onClick={e => e.stopPropagation()} style={{ width: "100%", background: T.bgCard, borderRadius: "20px 20px 0 0", padding: "20px 20px 32px", maxHeight: "70%", overflow: "auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, margin: 0 }}>Settings</h3>
           <button onClick={onClose} style={{ padding: 6, borderRadius: 8, border: "none", background: T.bgDim, cursor: "pointer" }}><X size={18} color={T.textMuted} /></button>
@@ -981,8 +1009,8 @@ function NotificationsModal({ onClose }) {
   ];
 
   return (
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.6)", backdropFilter: "blur(6px)", zIndex: 50, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-      <div onClick={e => e.stopPropagation()} style={{ width: "100%", maxWidth: 390, background: T.bgCard, borderRadius: "20px 20px 0 0", padding: "20px 20px 32px", maxHeight: "70vh", overflow: "auto" }}>
+    <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,.6)", backdropFilter: "blur(6px)", zIndex: 50, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div onClick={e => e.stopPropagation()} style={{ width: "100%", background: T.bgCard, borderRadius: "20px 20px 0 0", padding: "20px 20px 32px", maxHeight: "70%", overflow: "auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, margin: 0 }}>Notifications</h3>
           <button onClick={onClose} style={{ padding: 6, borderRadius: 8, border: "none", background: T.bgDim, cursor: "pointer" }}><X size={18} color={T.textMuted} /></button>
@@ -1013,8 +1041,8 @@ function ReservationModal({ classData, onConfirm, onClose }) {
   };
 
   return (
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.6)", backdropFilter: "blur(6px)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 350, background: T.bgCard, borderRadius: 20, padding: 24, textAlign: "center" }}>
+    <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,.6)", backdropFilter: "blur(6px)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div onClick={e => e.stopPropagation()} style={{ width: "90%", background: T.bgCard, borderRadius: 20, padding: 24, textAlign: "center" }}>
         {confirmed ? (
           <>
             <div style={{ width: 60, height: 60, borderRadius: "50%", background: T.accentGhost, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
@@ -1168,10 +1196,10 @@ export default function App() {
   // ——— CONSUMER LAYOUT ———
   return (
     <AppContext.Provider value={{ page, setPage, classRegistrations, registerForClass, openReservation, feedCelebrations, celebrateFeed }}>
-      <div style={{ maxWidth: 390, margin: "0 auto", minHeight: "100vh", background: T.bgDim, fontFamily: "'DM Sans', system-ui, sans-serif", position: "relative" }}>
+      <div style={{ height: "100%", display: "flex", flexDirection: "column", background: T.bgDim, fontFamily: "'DM Sans', system-ui, sans-serif", position: "relative" }}>
 
         {/* Header */}
-        <header style={{ position: "sticky", top: 0, zIndex: 30, background: T.bg, color: "#fff", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <header style={{ flexShrink: 0, zIndex: 30, background: T.bg, color: "#fff", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <button onClick={() => setPage("home")} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", color: "#fff" }}>
             {STUDIO_CONFIG.logoImage ? (
               <img src={STUDIO_CONFIG.logoImage} alt={STUDIO_CONFIG.name} style={{ width: 38, height: 38, borderRadius: 10, objectFit: "cover" }} />
@@ -1197,36 +1225,13 @@ export default function App() {
           </div>
         </header>
 
-        {/* Content */}
-        <main style={{ paddingBottom: 80 }}>
+        {/* Scrollable Content */}
+        <main style={{ flex: 1, overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
           {renderPage()}
         </main>
 
-        {/* More Menu */}
-        {showMore && (
-          <div onClick={() => setShowMore(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.5)", backdropFilter: "blur(4px)", zIndex: 40 }}>
-            <div onClick={e => e.stopPropagation()} style={{ position: "absolute", bottom: 68, left: 16, right: 16, maxWidth: 358, margin: "0 auto", background: T.bgCard, borderRadius: 16, padding: "14px 12px", boxShadow: "0 8px 32px rgba(0,0,0,.15)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 6px 8px" }}>
-                <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 20 }}>More</span>
-                <button onClick={() => setShowMore(false)} style={{ padding: 4, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer" }}><X size={18} color={T.textMuted} /></button>
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                {moreItems.map(item => {
-                  const active = page === item.id;
-                  return (
-                    <button key={item.id} onClick={() => { setPage(item.id); setShowMore(false); }} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "14px 8px", borderRadius: 10, border: "none", cursor: "pointer", background: active ? T.accentGhost : T.bgDim, color: active ? T.accent : T.textMuted }}>
-                      <item.icon size={22} />
-                      <span style={{ fontSize: 13, fontWeight: 600 }}>{item.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Bottom Nav */}
-        <nav style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 30, background: T.bgCard, borderTop: `1px solid ${T.border}`, maxWidth: 390, margin: "0 auto" }}>
+        <nav style={{ flexShrink: 0, zIndex: 30, background: T.bgCard, borderTop: `1px solid ${T.border}` }}>
           <div style={{ display: "flex", justifyContent: "space-around", padding: "6px 4px 10px" }}>
             {mainTabs.map(tab => {
               const active = tab.id === "more" ? (isMoreActive || showMore) : page === tab.id;
@@ -1247,6 +1252,29 @@ export default function App() {
             })}
           </div>
         </nav>
+
+        {/* More Menu Overlay */}
+        {showMore && (
+          <div onClick={() => setShowMore(false)} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,.5)", backdropFilter: "blur(4px)", zIndex: 40 }}>
+            <div onClick={e => e.stopPropagation()} style={{ position: "absolute", bottom: 68, left: 16, right: 16, background: T.bgCard, borderRadius: 16, padding: "14px 12px", boxShadow: "0 8px 32px rgba(0,0,0,.15)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 6px 8px" }}>
+                <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 20 }}>More</span>
+                <button onClick={() => setShowMore(false)} style={{ padding: 4, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer" }}><X size={18} color={T.textMuted} /></button>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                {moreItems.map(item => {
+                  const active = page === item.id;
+                  return (
+                    <button key={item.id} onClick={() => { setPage(item.id); setShowMore(false); }} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "14px 8px", borderRadius: 10, border: "none", cursor: "pointer", background: active ? T.accentGhost : T.bgDim, color: active ? T.accent : T.textMuted }}>
+                      <item.icon size={22} />
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Modals */}
         {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}

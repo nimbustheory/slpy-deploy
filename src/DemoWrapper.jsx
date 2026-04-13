@@ -62,29 +62,19 @@ export default function DemoWrapper() {
     gap: 20,
   };
 
-  // Admin mode: full browser takeover, no phone frame or sidebars
-  if (isAdminMode) {
-    return (
-      <div style={{ minHeight: "100vh", background: "#09090b" }}>
-        <App />
-        <style>{`
-          * { scrollbar-width: none; -ms-overflow-style: none; }
-          *::-webkit-scrollbar { display: none; }
-        `}</style>
-      </div>
-    );
-  }
-
   return (
     <div style={{
       display: "flex",
       justifyContent: "center",
       minHeight: "100vh",
-      background: "#f5f2ed",
+      background: isAdminMode ? "#09090b" : "#f5f2ed",
       fontFamily: "'DM Sans', system-ui, sans-serif",
     }}>
-      {/* Left Sidebar */}
-      <div className="demo-sidebar-left" style={sidebarStyle}>
+      {/* Left Sidebar -- hidden in admin mode */}
+      <div className="demo-sidebar-left" style={{
+        ...sidebarStyle,
+        ...(isAdminMode ? { display: "none" } : {}),
+      }}>
         <p style={{
           fontSize: 11,
           fontWeight: 700,
@@ -144,21 +134,25 @@ export default function DemoWrapper() {
           marginTop: 40,
           letterSpacing: "0.04em",
         }}>
-          BUILT BY LUMI — LUMICLASS.APP
+          BUILT BY LUMI -- LUMICLASS.APP
         </p>
       </div>
 
-      {/* Center: Phone Frame */}
+      {/* Center: Phone Frame / Full Screen */}
       <div style={{
         display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "center",
-        padding: "32px 20px",
+        alignItems: isAdminMode ? undefined : "flex-start",
+        justifyContent: isAdminMode ? undefined : "center",
+        padding: isAdminMode ? 0 : "32px 20px",
         flexShrink: 0,
+        flex: isAdminMode ? 1 : undefined,
       }}>
         <div
           ref={phoneRef}
-          style={{
+          style={isAdminMode ? {
+            width: "100%",
+            minHeight: "100vh",
+          } : {
             width: 390,
             height: 780,
             borderRadius: 40,
@@ -170,19 +164,22 @@ export default function DemoWrapper() {
             flexShrink: 0,
           }}
         >
-          <div style={{
+          <div style={isAdminMode ? {
+            minHeight: "100vh",
+          } : {
             height: "100%",
-            overflowY: "auto",
-            overflowX: "hidden",
-            WebkitOverflowScrolling: "touch",
+            overflow: "hidden",
           }}>
             <App />
           </div>
         </div>
       </div>
 
-      {/* Right Sidebar */}
-      <div className="demo-sidebar-right" style={rightSidebarStyle}>
+      {/* Right Sidebar -- hidden in admin mode */}
+      <div className="demo-sidebar-right" style={{
+        ...rightSidebarStyle,
+        ...(isAdminMode ? { display: "none" } : {}),
+      }}>
         {salesCards.map((card, i) => (
           <div
             key={i}
