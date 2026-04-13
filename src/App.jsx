@@ -501,7 +501,7 @@ function ClassesPage() {
   return (
     <div>
       <PageHero title="Classes" subtitle="Past, present, and upcoming practice" image="/images/class-scene.jpg" />
-      <div style={{ padding: "12px 16px 0" }}>
+      <div style={{ padding: "20px 16px 0" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {allPractices.map(p => (
             <PracticeCardFull key={p.id} practice={p} expanded={expandedPractice === p.id} onToggle={() => setExpandedPractice(expandedPractice === p.id ? null : p.id)} />
@@ -522,7 +522,7 @@ function SchedulePage() {
   return (
     <div>
       <PageHero title="Schedule" subtitle="Reserve your spot -- classes fill up fast" image="/images/studio-interior.jpg" />
-      <div style={{ padding: "12px 16px 0" }}>
+      <div style={{ padding: "20px 16px 0" }}>
       <div style={{ display: "flex", gap: 4, marginBottom: 16, overflowX: "auto", paddingBottom: 4 }}>
         {days.map((d, i) => (
           <button key={d} onClick={() => setSelectedDay(i)} style={{ padding: "8px 14px", borderRadius: 8, border: "none", background: selectedDay === i ? T.accent : T.bgCard, color: selectedDay === i ? "#fff" : T.textMuted, fontSize: 13, fontWeight: 600, cursor: "pointer", flexShrink: 0 }}>
@@ -561,7 +561,7 @@ function PracticePage() {
   return (
     <div>
       <PageHero title="My Practice" subtitle="Track your growth on the mat" image="/images/yoga-flow.jpg" />
-      <div style={{ padding: "12px 16px 0" }}>
+      <div style={{ padding: "20px 16px 0" }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
         {[
           { label: "Total Classes", value: stats.totalClasses, icon: Flame, color: T.accent },
@@ -613,7 +613,7 @@ function CommunityPage() {
   return (
     <div>
       <PageHero title="cOMmunity" subtitle="Celebrate milestones and connect with your people" image="/images/team-photo.jpg" />
-      <div style={{ padding: "12px 16px 0" }}>
+      <div style={{ padding: "20px 16px 0" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {COMMUNITY_FEED.map(item => {
           const myC = feedCelebrations[item.id] || 0;
@@ -651,7 +651,7 @@ function TeachersPage() {
   return (
     <div>
       <PageHero title="Our Team" subtitle="Yoga with teachers that are unique, inspiring, and fun" image="/images/class-action.jpg" />
-      <div style={{ padding: "12px 16px 0" }}>
+      <div style={{ padding: "20px 16px 0" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {TEACHERS.map(t => (
           <div key={t.id} style={{ background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 14, overflow: "hidden" }}>
@@ -693,7 +693,7 @@ function EventsPage() {
   return (
     <div>
       <PageHero title="Events" subtitle="Workshops, sound baths, trainings, and more" image="/images/rooftop-flow.jpg" />
-      <div style={{ padding: "12px 16px 0" }}>
+      <div style={{ padding: "20px 16px 0" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {EVENTS.map(ev => {
           const spotsLeft = ev.maxParticipants - ev.registered;
@@ -732,7 +732,7 @@ function MembershipPage() {
   return (
     <div>
       <PageHero title="Membership" subtitle="Simple. Understandable. Accessible." image="/images/studio-view.jpg" />
-      <div style={{ padding: "12px 16px 0" }}>
+      <div style={{ padding: "20px 16px 0" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {MEMBERSHIP_TIERS.map(tier => (
           <div key={tier.id} style={{ background: T.bgCard, border: `1px solid ${tier.popular ? T.accent : T.border}`, borderRadius: 14, padding: 18, position: "relative", overflow: "hidden" }}>
@@ -778,7 +778,7 @@ function GuestPassesPage() {
   return (
     <div>
       <PageHero title="Buddy Passes" subtitle="Share the SLPY love with someone special" image="/images/community-gather.jpg" />
-      <div style={{ padding: "12px 16px 0" }}>
+      <div style={{ padding: "20px 16px 0" }}>
       <div style={{ background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 14, padding: 18, marginBottom: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
           <Gift size={24} color={T.accent} />
@@ -1470,7 +1470,7 @@ export default function App() {
   // ——— CONSUMER LAYOUT ———
   return (
     <AppContext.Provider value={{ page, setPage, classRegistrations, registerForClass, openReservation, feedCelebrations, celebrateFeed }}>
-      <div style={{ height: "100%", display: "flex", flexDirection: "column", background: T.bgDim, fontFamily: "'DM Sans', system-ui, sans-serif", position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", background: T.bgDim, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
 
         {/* Header */}
         <header style={{ flexShrink: 0, zIndex: 30, background: T.bg, color: "#fff", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
