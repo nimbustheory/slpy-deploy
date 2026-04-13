@@ -33,7 +33,7 @@ export default function DemoWrapper() {
     {
       icon: <Star size={28} color={CONFIG.accent} strokeWidth={1.5} />,
       title: `Built for ${CONFIG.studioName}`,
-      desc: `Custom-designed around your brand, class types, teachers, and the welcoming community your members already love.`,
+      desc: `Custom-designed around SLPY's hot power vinyasa classes, Baptiste-trained instructors, and the SLC community that made it Utah's best studio.`,
     },
     {
       icon: <MapPin size={28} color={CONFIG.accent} strokeWidth={1.5} />,
@@ -134,7 +134,7 @@ export default function DemoWrapper() {
           marginTop: 40,
           letterSpacing: "0.04em",
         }}>
-          BUILT BY LUMI -- LUMICLASS.APP
+          Built by LUMI — LumiClass.app
         </p>
       </div>
 
