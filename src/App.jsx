@@ -1372,12 +1372,12 @@ export default function App() {
     { id: "home", label: "Home", icon: Home },
     { id: "schedule", label: "Schedule", icon: CalendarDays },
     { id: "practice", label: "Practice", icon: Flame },
+    { id: "community", label: "Community", icon: Heart },
     { id: "more", label: "More", icon: Menu },
   ];
 
   const moreItems = [
     { id: "classes", label: "Classes", icon: Calendar },
-    { id: "community", label: "cOMmunity", icon: Heart },
     { id: "teachers", label: "Teachers", icon: Users },
     { id: "events", label: "Events", icon: PartyPopper },
     { id: "membership", label: "Membership", icon: CreditCard },
@@ -1470,7 +1470,7 @@ export default function App() {
   // ——— CONSUMER LAYOUT ———
   return (
     <AppContext.Provider value={{ page, setPage, classRegistrations, registerForClass, openReservation, feedCelebrations, celebrateFeed }}>
-      <div style={{ height: "100%", display: "flex", flexDirection: "column", background: T.bgDim, fontFamily: "'DM Sans', system-ui, sans-serif", position: "relative" }}>
+      <div style={{ height: "100%", display: "flex", flexDirection: "column", background: T.bgDim, fontFamily: "'DM Sans', system-ui, sans-serif", position: "relative", overflow: "hidden" }}>
 
         {/* Header */}
         <header style={{ flexShrink: 0, zIndex: 30, background: T.bg, color: "#fff", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -1500,7 +1500,7 @@ export default function App() {
         </header>
 
         {/* Scrollable Content */}
-        <main style={{ flex: 1, overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
+        <main style={{ flex: 1, minHeight: 0, overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
           {renderPage()}
         </main>
 
