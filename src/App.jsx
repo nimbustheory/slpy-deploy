@@ -1475,10 +1475,14 @@ export default function App() {
   }
 
   // ——— CONSUMER LAYOUT ———
-  const navPortal = typeof document !== "undefined" ? document.getElementById("phone-nav-portal") : null;
+  const [navPortal, setNavPortal] = useState(null);
+  useEffect(() => {
+    const el = document.getElementById("phone-nav-portal");
+    if (el) setNavPortal(el);
+  }, [isAdmin]);
 
   const navContent = (
-    <nav style={{ width: "100%", height: 64, background: T.bgCard, borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "space-around" }}>
+    <nav style={{ width: "100%", height: 64, display: "flex", alignItems: "center", justifyContent: "space-around" }}>
       {mainTabs.map(tab => {
         const active = tab.id === "more" ? (isMoreActive || showMore) : page === tab.id;
         if (tab.id === "more") {

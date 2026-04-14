@@ -13,6 +13,16 @@ export default function DemoWrapper() {
     return () => window.removeEventListener("adminModeChange", handler);
   }, []);
 
+  const openAdmin = () => {
+    window.dispatchEvent(new CustomEvent("openAdmin"));
+  };
+
+  // ——— ADMIN: full browser takeover, zero wrapper ———
+  if (isAdminMode) {
+    return <App />;
+  }
+
+  // ——— CONSUMER: three-column DemoWrapper ———
   const features = [
     { title: "Class Scheduling", desc: "Weekly schedule with real-time reservations" },
     { title: "Practice Tracking", desc: "Reflections, streaks, and milestone badges" },
@@ -23,10 +33,6 @@ export default function DemoWrapper() {
     { title: "Smart Notifications", desc: "Class reminders and streak alerts" },
     { title: "Admin Dashboard", desc: "Full analytics, CRM, and broadcast tools" },
   ];
-
-  const openAdmin = () => {
-    window.dispatchEvent(new CustomEvent("openAdmin"));
-  };
 
   const salesCards = [
     {
@@ -72,14 +78,11 @@ export default function DemoWrapper() {
       display: "flex",
       justifyContent: "center",
       minHeight: "100vh",
-      background: isAdminMode ? "#09090b" : "#f5f2ed",
+      background: "#f5f2ed",
       fontFamily: "'DM Sans', system-ui, sans-serif",
     }}>
-      {/* Left Sidebar -- hidden in admin mode */}
-      <div className="demo-sidebar-left" style={{
-        ...sidebarStyle,
-        ...(isAdminMode ? { display: "none" } : {}),
-      }}>
+      {/* Left Sidebar */}
+      <div className="demo-sidebar-left" style={sidebarStyle}>
         <p style={{
           fontSize: 11,
           fontWeight: 700,
@@ -143,21 +146,18 @@ export default function DemoWrapper() {
         </p>
       </div>
 
-      {/* Center: Phone Frame / Full Screen */}
+      {/* Center: Phone Mockup */}
       <div style={{
         display: "flex",
-        alignItems: isAdminMode ? undefined : "flex-start",
-        justifyContent: isAdminMode ? undefined : "center",
-        padding: isAdminMode ? 0 : "32px 20px",
+        alignItems: "flex-start",
+        justifyContent: "center",
+        padding: "32px 20px",
         flexShrink: 0,
-        flex: isAdminMode ? 1 : undefined,
       }}>
+        {/* Phone frame — EXACT spec: 390x844, relative, overflow hidden */}
         <div
           ref={phoneRef}
-          style={isAdminMode ? {
-            width: "100%",
-            minHeight: "100vh",
-          } : {
+          style={{
             width: 390,
             height: 844,
             position: "relative",
@@ -168,24 +168,37 @@ export default function DemoWrapper() {
             flexShrink: 0,
           }}
         >
-          {isAdminMode ? (
+          {/* Scrollable content area — absolute, bottom 64px for nav */}
+          <div id="phone-scroll-area" style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 64,
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}>
             <App />
-          ) : (
-            <>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 64, overflowY: "auto", overflowX: "hidden" }}>
-                <App />
-              </div>
-              <div id="phone-nav-portal" style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 64, zIndex: 50 }} />
-            </>
-          )}
+          </div>
+          {/* Bottom nav slot — absolute, pinned to bottom */}
+          <div id="phone-nav-portal" style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 64,
+            background: "#fff",
+            borderTop: "1px solid #eee",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-around",
+            zIndex: 50,
+          }} />
         </div>
       </div>
 
-      {/* Right Sidebar -- hidden in admin mode */}
-      <div className="demo-sidebar-right" style={{
-        ...rightSidebarStyle,
-        ...(isAdminMode ? { display: "none" } : {}),
-      }}>
+      {/* Right Sidebar */}
+      <div className="demo-sidebar-right" style={rightSidebarStyle}>
         {salesCards.map((card, i) => (
           <div
             key={i}
