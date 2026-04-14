@@ -1366,6 +1366,12 @@ export default function App() {
     window.dispatchEvent(new CustomEvent("adminModeChange", { detail: { isAdmin } }));
   }, [isAdmin]);
 
+  useEffect(() => {
+    const handler = () => { setIsAdmin(true); setPage("admin-dashboard"); };
+    window.addEventListener("openAdmin", handler);
+    return () => window.removeEventListener("openAdmin", handler);
+  }, []);
+
   const unreadCount = 2;
 
   const mainTabs = [

@@ -24,11 +24,16 @@ export default function DemoWrapper() {
     { title: "Admin Dashboard", desc: "Full analytics, CRM, and broadcast tools" },
   ];
 
+  const openAdmin = () => {
+    window.dispatchEvent(new CustomEvent("openAdmin"));
+  };
+
   const salesCards = [
     {
       icon: <Shield size={28} color={CONFIG.accent} strokeWidth={1.5} />,
       title: "Admin Dashboard",
       desc: "Tap the shield icon in the app header to access the full admin suite -- analytics, member CRM, scheduling, and broadcast tools.",
+      action: openAdmin,
     },
     {
       icon: <Star size={28} color={CONFIG.accent} strokeWidth={1.5} />,
@@ -199,6 +204,22 @@ export default function DemoWrapper() {
             }}>
               {card.desc}
             </p>
+            {card.action && (
+              <button onClick={card.action} style={{
+                width: "100%",
+                marginTop: 16,
+                padding: "12px 0",
+                borderRadius: 10,
+                border: "none",
+                background: CONFIG.accent,
+                color: "#fff",
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}>
+                Open Admin
+              </button>
+            )}
           </div>
         ))}
       </div>
