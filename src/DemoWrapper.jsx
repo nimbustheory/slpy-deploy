@@ -164,14 +164,7 @@ export default function DemoWrapper() {
             flexShrink: 0,
           }}
         >
-          <div style={isAdminMode ? {
-            minHeight: "100vh",
-          } : {
-            height: "100%",
-            position: "relative",
-          }}>
-            <App />
-          </div>
+          <App />
         </div>
       </div>
 
