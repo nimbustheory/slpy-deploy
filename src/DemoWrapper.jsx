@@ -154,13 +154,12 @@ export default function DemoWrapper() {
             minHeight: "100vh",
           } : {
             width: 390,
-            height: 780,
-            borderRadius: 40,
-            overflow: "hidden",
-            boxShadow: "0 25px 80px rgba(0,0,0,.12), 0 8px 24px rgba(0,0,0,.08)",
-            background: "#fff",
+            height: 844,
             position: "relative",
-            transform: "translateZ(0)",
+            overflow: "hidden",
+            borderRadius: 40,
+            background: "#fff",
+            boxShadow: "0 25px 80px rgba(0,0,0,.12), 0 8px 24px rgba(0,0,0,.08)",
             flexShrink: 0,
           }}
         >
