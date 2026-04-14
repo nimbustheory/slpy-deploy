@@ -168,7 +168,16 @@ export default function DemoWrapper() {
             flexShrink: 0,
           }}
         >
-          <App />
+          {isAdminMode ? (
+            <App />
+          ) : (
+            <>
+              <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 64, overflowY: "auto", overflowX: "hidden" }}>
+                <App />
+              </div>
+              <div id="phone-nav-portal" style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 64, zIndex: 50 }} />
+            </>
+          )}
         </div>
       </div>
 

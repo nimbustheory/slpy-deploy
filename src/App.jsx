@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, createContext, useContext } from "react";
+import { createPortal } from "react-dom";
 import {
   Home, Calendar, TrendingUp, Users, CreditCard, CalendarDays,
   Menu, X, Bell, Settings, Shield, ChevronRight, ChevronDown, Clock,
@@ -1474,68 +1475,74 @@ export default function App() {
   }
 
   // ——— CONSUMER LAYOUT ———
+  const navPortal = typeof document !== "undefined" ? document.getElementById("phone-nav-portal") : null;
+
+  const navContent = (
+    <nav style={{ width: "100%", height: 64, background: T.bgCard, borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "space-around" }}>
+      {mainTabs.map(tab => {
+        const active = tab.id === "more" ? (isMoreActive || showMore) : page === tab.id;
+        if (tab.id === "more") {
+          return (
+            <button key={tab.id} onClick={() => setShowMore(true)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, padding: "6px 12px", borderRadius: 10, border: "none", background: "transparent", cursor: "pointer", color: active ? T.accent : T.textFaint }}>
+              <tab.icon size={20} strokeWidth={active ? 2.5 : 2} />
+              <span style={{ fontSize: 10, fontWeight: active ? 700 : 500 }}>{tab.label}</span>
+            </button>
+          );
+        }
+        return (
+          <button key={tab.id} onClick={() => setPage(tab.id)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, padding: "6px 12px", borderRadius: 10, border: "none", background: "transparent", cursor: "pointer", color: active ? T.accent : T.textFaint }}>
+            <tab.icon size={20} strokeWidth={active ? 2.5 : 2} />
+            <span style={{ fontSize: 10, fontWeight: active ? 700 : 500 }}>{tab.label}</span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+
   return (
     <AppContext.Provider value={{ page, setPage, classRegistrations, registerForClass, openReservation, feedCelebrations, celebrateFeed }}>
-      <div style={{ position: "relative", width: "100%", height: "100%", background: T.bgDim, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+      <div style={{ background: T.bgDim, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
 
-        {/* Scrollable content area — absolute, stops above the 64px nav */}
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 64, overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
-          {/* Header inside scroll area so it scrolls with content */}
-          <header style={{ position: "sticky", top: 0, zIndex: 30, background: T.bg, color: "#fff", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <button onClick={() => setPage("home")} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", color: "#fff" }}>
-              {STUDIO_CONFIG.logoImage ? (
-                <img src={STUDIO_CONFIG.logoImage} alt={STUDIO_CONFIG.name} style={{ width: 38, height: 38, borderRadius: 10, objectFit: "cover" }} />
-              ) : (
-                <div style={{ width: 38, height: 38, borderRadius: 10, background: T.accent, display: "flex", alignItems: "center", justifyContent: "center" }}><Flame size={20} color="#fff" /></div>
-              )}
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, lineHeight: 1, letterSpacing: "0.02em" }}>{STUDIO_CONFIG.name}</span>
-                <span style={{ fontSize: 8, color: "#71717a", textTransform: "uppercase", letterSpacing: "0.15em" }}>{STUDIO_CONFIG.subtitle}</span>
-              </div>
-            </button>
-            <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <button onClick={() => { setIsAdmin(true); setPage("admin-dashboard"); }} style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", color: T.accent }}>
-                <Shield size={20} />
-              </button>
-              <button onClick={() => setShowNotifications(true)} style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", color: "#fff", position: "relative" }}>
-                <Bell size={20} />
-                {unreadCount > 0 && <span style={{ position: "absolute", top: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: T.accent, fontSize: 9, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>{unreadCount}</span>}
-              </button>
-              <button onClick={() => setShowSettings(true)} style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", color: "#fff" }}>
-                <Settings size={20} />
-              </button>
+        {/* Header — sticky inside the DemoWrapper scroll container */}
+        <header style={{ position: "sticky", top: 0, zIndex: 30, background: T.bg, color: "#fff", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <button onClick={() => setPage("home")} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", color: "#fff" }}>
+            {STUDIO_CONFIG.logoImage ? (
+              <img src={STUDIO_CONFIG.logoImage} alt={STUDIO_CONFIG.name} style={{ width: 38, height: 38, borderRadius: 10, objectFit: "cover" }} />
+            ) : (
+              <div style={{ width: 38, height: 38, borderRadius: 10, background: T.accent, display: "flex", alignItems: "center", justifyContent: "center" }}><Flame size={20} color="#fff" /></div>
+            )}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, lineHeight: 1, letterSpacing: "0.02em" }}>{STUDIO_CONFIG.name}</span>
+              <span style={{ fontSize: 8, color: "#71717a", textTransform: "uppercase", letterSpacing: "0.15em" }}>{STUDIO_CONFIG.subtitle}</span>
             </div>
-          </header>
+          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <button onClick={() => { setIsAdmin(true); setPage("admin-dashboard"); }} style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", color: T.accent }}>
+              <Shield size={20} />
+            </button>
+            <button onClick={() => setShowNotifications(true)} style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", color: "#fff", position: "relative" }}>
+              <Bell size={20} />
+              {unreadCount > 0 && <span style={{ position: "absolute", top: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: T.accent, fontSize: 9, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>{unreadCount}</span>}
+            </button>
+            <button onClick={() => setShowSettings(true)} style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", color: "#fff" }}>
+              <Settings size={20} />
+            </button>
+          </div>
+        </header>
 
-          {/* Page content */}
-          {renderPage()}
-        </div>
+        {/* Page content — flows naturally, DemoWrapper scroll container handles scrolling */}
+        {renderPage()}
 
-        {/* Bottom Nav — absolute pinned to bottom */}
-        <nav style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 64, background: T.bgCard, borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "space-around", zIndex: 50 }}>
-          {mainTabs.map(tab => {
-            const active = tab.id === "more" ? (isMoreActive || showMore) : page === tab.id;
-            if (tab.id === "more") {
-              return (
-                <button key={tab.id} onClick={() => setShowMore(true)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, padding: "6px 12px", borderRadius: 10, border: "none", background: "transparent", cursor: "pointer", color: active ? T.accent : T.textFaint }}>
-                  <tab.icon size={20} strokeWidth={active ? 2.5 : 2} />
-                  <span style={{ fontSize: 10, fontWeight: active ? 700 : 500 }}>{tab.label}</span>
-                </button>
-              );
-            }
-            return (
-              <button key={tab.id} onClick={() => setPage(tab.id)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, padding: "6px 12px", borderRadius: 10, border: "none", background: "transparent", cursor: "pointer", color: active ? T.accent : T.textFaint }}>
-                <tab.icon size={20} strokeWidth={active ? 2.5 : 2} />
-                <span style={{ fontSize: 10, fontWeight: active ? 700 : 500 }}>{tab.label}</span>
-              </button>
-            );
-          })}
-        </nav>
+        {/* Portal the nav bar into the DemoWrapper's fixed nav slot */}
+        {navPortal && createPortal(navContent, navPortal)}
+
+        {/* Inline nav fallback when no portal (standalone / admin transition) */}
+        {!navPortal && navContent}
 
         {/* More Menu Overlay */}
         {showMore && (
-          <div onClick={() => setShowMore(false)} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,.5)", backdropFilter: "blur(4px)", zIndex: 40 }}>
-            <div onClick={e => e.stopPropagation()} style={{ position: "absolute", bottom: 72, left: 16, right: 16, background: T.bgCard, borderRadius: 16, padding: "14px 12px", boxShadow: "0 8px 32px rgba(0,0,0,.15)" }}>
+          <div onClick={() => setShowMore(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.5)", backdropFilter: "blur(4px)", zIndex: 9999 }}>
+            <div onClick={e => e.stopPropagation()} style={{ position: "fixed", bottom: 80, left: "50%", transform: "translateX(-50%)", width: 358, background: T.bgCard, borderRadius: 16, padding: "14px 12px", boxShadow: "0 8px 32px rgba(0,0,0,.15)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 6px 8px" }}>
                 <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 20 }}>More</span>
                 <button onClick={() => setShowMore(false)} style={{ padding: 4, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer" }}><X size={18} color={T.textMuted} /></button>
