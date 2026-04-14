@@ -168,7 +168,7 @@ export default function DemoWrapper() {
             minHeight: "100vh",
           } : {
             height: "100%",
-            overflow: "hidden",
+            position: "relative",
           }}>
             <App />
           </div>
