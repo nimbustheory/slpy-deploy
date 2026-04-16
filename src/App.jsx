@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, createContext, useContext } from "react";
-import { createPortal } from "react-dom";
 import {
   Home, Calendar, TrendingUp, Users, CreditCard, CalendarDays,
   Menu, X, Bell, Settings, Shield, ChevronRight, ChevronDown, Clock,
@@ -1342,9 +1341,9 @@ function ReservationModal({ classData, onConfirm, onClose }) {
 // ═══════════════════════════════════════════════════════════════
 //  MAIN APP
 // ═══════════════════════════════════════════════════════════════
-export default function App() {
-  const [page, setPage] = useState("home");
-  const [isAdmin, setIsAdmin] = useState(false);
+export default function App({ onEnterAdmin, onExitAdmin, startInAdmin } = {}) {
+  const [page, setPage] = useState(startInAdmin ? "admin-dashboard" : "home");
+  const [isAdmin, setIsAdmin] = useState(!!startInAdmin);
   const [showSettings, setShowSettings] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -1363,15 +1362,6 @@ export default function App() {
     setFeedCelebrations(prev => ({ ...prev, [feedId]: (prev[feedId] || 0) + 1 }));
   }, []);
 
-  useEffect(() => {
-    window.dispatchEvent(new CustomEvent("adminModeChange", { detail: { isAdmin } }));
-  }, [isAdmin]);
-
-  useEffect(() => {
-    const handler = () => { setIsAdmin(true); setPage("admin-dashboard"); };
-    window.addEventListener("openAdmin", handler);
-    return () => window.removeEventListener("openAdmin", handler);
-  }, []);
 
   const unreadCount = 2;
 
@@ -1460,7 +1450,7 @@ export default function App() {
               })}
             </nav>
             <div style={{ borderTop: "1px solid #e5e7eb", padding: "10px 8px" }}>
-              <button onClick={() => { setIsAdmin(false); setPage("home"); }} style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "10px 12px", borderRadius: 8, border: "none", background: "transparent", color: "#6b7280", fontSize: 13, cursor: "pointer", textAlign: "left" }}>
+              <button onClick={() => { if (onExitAdmin) { onExitAdmin(); } else { setIsAdmin(false); setPage("home"); } }} style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "10px 12px", borderRadius: 8, border: "none", background: "transparent", color: "#6b7280", fontSize: 13, cursor: "pointer", textAlign: "left" }}>
                 <LogOut size={18} />
                 <span>Exit Admin</span>
               </button>
@@ -1475,14 +1465,8 @@ export default function App() {
   }
 
   // ——— CONSUMER LAYOUT ———
-  const [navPortal, setNavPortal] = useState(null);
-  useEffect(() => {
-    const el = document.getElementById("phone-nav-portal");
-    if (el) setNavPortal(el);
-  }, [isAdmin]);
-
   const navContent = (
-    <nav style={{ width: "100%", height: 64, display: "flex", alignItems: "center", justifyContent: "space-around" }}>
+    <nav style={{ width: "100%", height: 60, display: "flex", alignItems: "center", justifyContent: "space-around" }}>
       {mainTabs.map(tab => {
         const active = tab.id === "more" ? (isMoreActive || showMore) : page === tab.id;
         if (tab.id === "more") {
@@ -1505,43 +1489,45 @@ export default function App() {
 
   return (
     <AppContext.Provider value={{ page, setPage, classRegistrations, registerForClass, openReservation, feedCelebrations, celebrateFeed }}>
-      <div style={{ background: T.bgDim, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+      <div style={{ height: "100%", display: "flex", flexDirection: "column", background: T.bgDim, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
 
-        {/* Header — sticky inside the DemoWrapper scroll container */}
-        <header style={{ position: "sticky", top: 0, zIndex: 30, background: T.bg, color: "#fff", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <button onClick={() => setPage("home")} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", color: "#fff" }}>
-            {STUDIO_CONFIG.logoImage ? (
-              <img src={STUDIO_CONFIG.logoImage} alt={STUDIO_CONFIG.name} style={{ width: 38, height: 38, borderRadius: 10, objectFit: "cover" }} />
-            ) : (
-              <div style={{ width: 38, height: 38, borderRadius: 10, background: T.accent, display: "flex", alignItems: "center", justifyContent: "center" }}><Flame size={20} color="#fff" /></div>
-            )}
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, lineHeight: 1, letterSpacing: "0.02em" }}>{STUDIO_CONFIG.name}</span>
-              <span style={{ fontSize: 8, color: "#71717a", textTransform: "uppercase", letterSpacing: "0.15em" }}>{STUDIO_CONFIG.subtitle}</span>
+        {/* Scrollable content area */}
+        <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}>
+          {/* Header — sticky inside the scroll container */}
+          <header style={{ position: "sticky", top: 0, zIndex: 30, background: T.bg, color: "#fff", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <button onClick={() => setPage("home")} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", color: "#fff" }}>
+              {STUDIO_CONFIG.logoImage ? (
+                <img src={STUDIO_CONFIG.logoImage} alt={STUDIO_CONFIG.name} style={{ width: 38, height: 38, borderRadius: 10, objectFit: "cover" }} />
+              ) : (
+                <div style={{ width: 38, height: 38, borderRadius: 10, background: T.accent, display: "flex", alignItems: "center", justifyContent: "center" }}><Flame size={20} color="#fff" /></div>
+              )}
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, lineHeight: 1, letterSpacing: "0.02em" }}>{STUDIO_CONFIG.name}</span>
+                <span style={{ fontSize: 8, color: "#71717a", textTransform: "uppercase", letterSpacing: "0.15em" }}>{STUDIO_CONFIG.subtitle}</span>
+              </div>
+            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <button onClick={() => { if (onEnterAdmin) { onEnterAdmin(); } else { setIsAdmin(true); setPage("admin-dashboard"); } }} style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", color: T.accent }}>
+                <Shield size={20} />
+              </button>
+              <button onClick={() => setShowNotifications(true)} style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", color: "#fff", position: "relative" }}>
+                <Bell size={20} />
+                {unreadCount > 0 && <span style={{ position: "absolute", top: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: T.accent, fontSize: 9, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>{unreadCount}</span>}
+              </button>
+              <button onClick={() => setShowSettings(true)} style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", color: "#fff" }}>
+                <Settings size={20} />
+              </button>
             </div>
-          </button>
-          <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <button onClick={() => { setIsAdmin(true); setPage("admin-dashboard"); }} style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", color: T.accent }}>
-              <Shield size={20} />
-            </button>
-            <button onClick={() => setShowNotifications(true)} style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", color: "#fff", position: "relative" }}>
-              <Bell size={20} />
-              {unreadCount > 0 && <span style={{ position: "absolute", top: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: T.accent, fontSize: 9, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>{unreadCount}</span>}
-            </button>
-            <button onClick={() => setShowSettings(true)} style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", color: "#fff" }}>
-              <Settings size={20} />
-            </button>
-          </div>
-        </header>
+          </header>
 
-        {/* Page content — flows naturally, DemoWrapper scroll container handles scrolling */}
-        {renderPage()}
+          {/* Page content */}
+          {renderPage()}
+        </div>
 
-        {/* Portal the nav bar into the DemoWrapper's fixed nav slot */}
-        {navPortal && createPortal(navContent, navPortal)}
-
-        {/* Inline nav fallback when no portal (standalone / admin transition) */}
-        {!navPortal && navContent}
+        {/* Bottom nav — pinned at bottom of flex container */}
+        <div style={{ flexShrink: 0, background: "#fff", borderTop: "1px solid #eee", zIndex: 50 }}>
+          {navContent}
+        </div>
 
         {/* More Menu Overlay */}
         {showMore && (
